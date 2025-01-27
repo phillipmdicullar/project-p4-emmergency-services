@@ -41,3 +41,15 @@ if __name__ == '__main__':
         posts.append(post)
         db.session.add(post)
     db.session.commit()
+        
+    for i in range(50):  
+            response = Response(
+                message=fake.sentence(),
+                date=fake.date_time_this_month(),
+                user_id=rc([user.id for user in users]),  
+                post_id=rc([post.id for post in posts]) 
+            )
+            db.session.add(response)
+    db.session.commit()
+
+    print("Seeding completed successfully!")
