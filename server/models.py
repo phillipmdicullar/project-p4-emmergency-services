@@ -31,4 +31,14 @@ class EmergencyPost(db.Model):
     def __repr__(self):
         return (f"<EmergencyPost(id={self.id}, location='{self.location}', type='{self.type}', "
                 f"description='{self.description}', date='{self.date}', user_id={self.user_id})>")
-    
+class Response(db.Model):
+    __tablename__ = "responses"
+    id = db.Column(db.Integer, primary_key=True)
+    message = db.Column(db.Text, nullable=False)
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey("emergency_posts.id"), nullable=False)
+
+    def __repr__(self):
+        return (f"<Response(id={self.id}, message='{self.message}', date='{self.date}', "
+                f"user_id={self.user_id}, post_id={self.post_id})>")
