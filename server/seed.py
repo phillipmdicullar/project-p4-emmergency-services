@@ -2,7 +2,6 @@
 
 # Standard library imports
 from random import randint, choice as rc
-
 # Remote library imports
 from faker import Faker
 
@@ -15,3 +14,8 @@ if __name__ == '__main__':
     with app.app_context():
         print("Starting seed...")
         # Seed code goes here!
+        print("Clearing database...")
+        db.session.query(Response).delete()
+        db.session.query(EmergencyPost).delete()
+        db.session.query(User).delete()
+        db.session.commit()        
