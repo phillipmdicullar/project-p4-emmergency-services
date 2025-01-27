@@ -16,7 +16,7 @@ class User(db.Model):
     username = db.Column(db.String(), nullable=False, unique=True)
     email = db.Column(db.String(), nullable=False, unique=True)
     password = db.Column(db.String(), nullable=False)
-
+    emergency_posts = db.relationship('EmergencyPost', backref='user')
     def __repr__(self):
         return f"<User(id={self.id}, username='{self.username}', email='{self.email}')>"
 
