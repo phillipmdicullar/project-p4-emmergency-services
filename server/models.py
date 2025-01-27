@@ -23,11 +23,12 @@ class User(db.Model):
 class EmergencyPost(db.Model):
     __tablename__ = "emergency_posts"
     id = db.Column(db.Integer, primary_key=True)
-    location = db.Column(db.String(255), nullable=False)
-    type = db.Column(db.String(50), nullable=False)  # Type of emergency (e.g., fire, flood)
+    location = db.Column(db.String(), nullable=False)
+    type = db.Column(db.String(), nullable=False)  # Type of emergency (e.g., fire, flood)
     description = db.Column(db.Text, nullable=False)
     date = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     def __repr__(self):
         return (f"<EmergencyPost(id={self.id}, location='{self.location}', type='{self.type}', "
                 f"description='{self.description}', date='{self.date}', user_id={self.user_id})>")
+    
