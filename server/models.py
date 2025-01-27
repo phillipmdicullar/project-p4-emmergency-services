@@ -8,10 +8,6 @@ metadata = MetaData(naming_convention={
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
 })
 db = SQLAlchemy(metadata=metadata)
-# Models go here!
-from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
-
 db = SQLAlchemy()
 
 class User(db.Model):
@@ -23,3 +19,15 @@ class User(db.Model):
 
     def __repr__(self):
         return f"<User(id={self.id}, username='{self.username}', email='{self.email}')>"
+
+class EmergencyPost(db.Model):
+    __tablename__ = "emergency_posts"
+    id = db.Column(db.Integer, primary_key=True)
+    location = db.Column(db.String(255), nullable=False)
+    type = db.Column(db.String(50), nullable=False)  # Type of emergency (e.g., fire, flood)
+    description = db.Column(db.Text, nullable=False)
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    def __repr__(self):
+        return (f"<EmergencyPost(id={self.id}, location='{self.location}', type='{self.type}', "
+                f"description='{self.description}', date='{self.date}', user_id={self.user_id})>")
