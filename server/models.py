@@ -28,6 +28,7 @@ class EmergencyPost(db.Model):
     description = db.Column(db.Text, nullable=False)
     date = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    responses = db.relationship('Response', backref='post')
     def __repr__(self):
         return (f"<EmergencyPost(id={self.id}, location='{self.location}', type='{self.type}', "
                 f"description='{self.description}', date='{self.date}', user_id={self.user_id})>")
