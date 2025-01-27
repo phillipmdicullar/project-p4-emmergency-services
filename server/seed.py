@@ -28,3 +28,16 @@ if __name__ == '__main__':
         users.append(user)
         db.session.add(user)
     db.session.commit()       
+
+    posts = []
+    for i in range(10): 
+        post = EmergencyPost(
+                location=fake.address(),
+                type=rc(["Fire", "Medical", "Flood", "Accident", "Other"]),
+                description=fake.text(max_nb_chars=200),
+                date=fake.date_time_this_year(),
+                user_id=rc([user.id for user in users])  # Assign a random user
+        )
+        posts.append(post)
+        db.session.add(post)
+    db.session.commit()
