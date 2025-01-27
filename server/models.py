@@ -1,14 +1,9 @@
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.associationproxy import association_proxy
-from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from sqlalchemy import MetaData
-from config import db
-metadata = MetaData(naming_convention={
-    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
-})
-db = SQLAlchemy(metadata=metadata)
-db = SQLAlchemy()
+from config import db  # Import the db from config
+
+# Define your models here
 
 class User(db.Model):
     __tablename__ = "users"
@@ -17,6 +12,7 @@ class User(db.Model):
     email = db.Column(db.String(), nullable=False, unique=True)
     password = db.Column(db.String(), nullable=False)
     emergency_posts = db.relationship('EmergencyPost', backref='user')
+
     def __repr__(self):
         return f"<User(id={self.id}, username='{self.username}', email='{self.email}')>"
 
@@ -29,9 +25,11 @@ class EmergencyPost(db.Model):
     date = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     responses = db.relationship('Response', backref='post')
+
     def __repr__(self):
         return (f"<EmergencyPost(id={self.id}, location='{self.location}', type='{self.type}', "
                 f"description='{self.description}', date='{self.date}', user_id={self.user_id})>")
+
 class Response(db.Model):
     __tablename__ = "responses"
     id = db.Column(db.Integer, primary_key=True)
@@ -43,3 +41,4 @@ class Response(db.Model):
     def __repr__(self):
         return (f"<Response(id={self.id}, message='{self.message}', date='{self.date}', "
                 f"user_id={self.user_id}, post_id={self.post_id})>")
+

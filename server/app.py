@@ -1,23 +1,20 @@
 #!/usr/bin/env python3
 
-# Standard library imports
-
 # Remote library imports
-from flask import request
-from flask_restful import Resource
-
-# Local imports
+from flask import Flask
+from flask_migrate import Migrate
 from config import app, db, api
-# Add your model imports
+from models import User, EmergencyPost, Response
 
+# App configuration
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.json.compact = False
 
-# Views go here!
+# Initialize extensions
+db.init_app(app)
+migrate = Migrate(app, db)
 
-@app.route('/')
-def index():
-    return '<h1>Project Server</h1>'
-
-
-if __name__ == '__main__':
+# Run the application
+if __name__ == "__main__":
     app.run(port=5555, debug=True)
-
