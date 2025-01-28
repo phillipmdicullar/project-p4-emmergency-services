@@ -1,20 +1,23 @@
 #!/usr/bin/env python3
 
 # Remote library imports
-from flask import Flask
+from flask import Flask, make_response
 from flask_migrate import Migrate
 from config import app, db, api
-from models import User, EmergencyPost, Response
+from models import User, EmergencyPost, Response  
+from flask_restful import Resource
 
-# App configuration
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.json.compact = False
-
-# Initialize extensions
-db.init_app(app)
 migrate = Migrate(app, db)
+class EmergencyPost(Resource):
+    def get(self):
+        response_to_dict = [n.to_dict for n in EmergencyPost.all()]
+        make_response = {
+            response_to_dict,
+            200
+        }
+        # return {"emergency": "Someone is injured in 201"}
+        return make_response
+api.add_resource(EmergencyPost, '/emergency') 
 
-# Run the application
 if __name__ == "__main__":
     app.run(port=5555, debug=True)
