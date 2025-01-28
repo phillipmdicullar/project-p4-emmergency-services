@@ -8,16 +8,11 @@ from models import User, EmergencyPost, Response
 from flask_restful import Resource
 
 migrate = Migrate(app, db)
-class EmergencyPost(Resource):
+class EmergencyPostResource(Resource):
     def get(self):
-        response_to_dict = [n.to_dict for n in EmergencyPost.all()]
-        make_response = {
-            response_to_dict,
-            200
-        }
-        # return {"emergency": "Someone is injured in 201"}
-        return make_response
-api.add_resource(EmergencyPost, '/emergency') 
+        response_dict_list = [n.to_dict() for n in EmergencyPost.query.all()]
+        return make_response(response_dict_list, 200)
+api.add_resource(EmergencyPostResource, '/emergency') 
 
 if __name__ == "__main__":
     app.run(port=5555, debug=True)

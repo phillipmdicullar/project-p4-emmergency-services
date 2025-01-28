@@ -5,7 +5,7 @@ from config import db  # Import the db from config
 
 # Define your models here
 
-class User(db.Model):
+class User(db.Model, SerializerMixin):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(), nullable=False, unique=True)
@@ -15,8 +15,13 @@ class User(db.Model):
 
     def __repr__(self):
         return f"<User(id={self.id}, username='{self.username}', email='{self.email}')>"
-
-class EmergencyPost(db.Model):
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "email": self.email
+        }
+class EmergencyPost(db.Model, SerializerMixin):
     __tablename__ = "emergency_posts"
     id = db.Column(db.Integer, primary_key=True)
     location = db.Column(db.String(), nullable=False)
@@ -29,8 +34,16 @@ class EmergencyPost(db.Model):
     def __repr__(self):
         return (f"<EmergencyPost(id={self.id}, location='{self.location}', type='{self.type}', "
                 f"description='{self.description}', date='{self.date}', user_id={self.user_id})>")
-
-class Response(db.Model):
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "location": self.location,
+            "type": self.type,
+            "description": self.description,
+            "date": self.date,
+            "user_id": self.user_id
+        }
+class Response(db.Model, SerializerMixin):
     __tablename__ = "responses"
     id = db.Column(db.Integer, primary_key=True)
     message = db.Column(db.Text, nullable=False)
@@ -42,3 +55,11 @@ class Response(db.Model):
         return (f"<Response(id={self.id}, message='{self.message}', date='{self.date}', "
                 f"user_id={self.user_id}, post_id={self.post_id})>")
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "message": self.message,
+            "date": self.date,
+            "user_id": self.user_id,
+            "post_id": self.post_id
+        }
