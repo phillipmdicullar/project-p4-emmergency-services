@@ -48,7 +48,6 @@ class EmergencyResponseResource(Resource):
     def put(self, id):
         incoming_data = request.get_json()
         data = EmergencyResponse(
-            post=incoming_data.get("post"),
             location=incoming_data.get("location"),
             type=incoming_data.get("type"),
             description=incoming_data.get("description"),
@@ -67,7 +66,7 @@ class EmergencyResponseResource(Resource):
         db.session.commit()
         return make_response({"message": "response deleted successfully"}, 200)
         
-api.add_resource(EmergencyResponseResource, '/emergencies/<int:id>')
+api.add_resource(EmergencyResponseResource, '/emergencies/<int:id>/responses')
 
 class UserResource(Resource):
     def get(self):
