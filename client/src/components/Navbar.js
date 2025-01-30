@@ -21,6 +21,9 @@ const CustomNavbar = () => {
             <Nav.Link as={Link} to="/">Home</Nav.Link>
             <Nav.Link as={Link} to="/emergencies">Emergency Posts</Nav.Link>
             <Nav.Link as={Link} to="/createemergencypost">Create Post </Nav.Link>
+            <Nav.Link as={Link} to="/about">About</Nav.Link>
+            <Nav.Link as={Link} to='/EmergencyPostsTable'>Emergency Posts Table</Nav.Link>
+            
           </Nav>
           <Nav>
             {isLoggedIn ? (

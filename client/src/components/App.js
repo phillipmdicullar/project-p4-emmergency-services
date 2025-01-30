@@ -11,6 +11,8 @@ import Footer from '../components/Footer'
 // import CreateEmergencyPost from '../components/CreateEmergencyPost'
 // import EmergencyPosts from '../components/emergencies'
 import NotFound from '../components/NotFound'
+
+import EmergencyPostsTable from "./EmergencyPostsTable";
 function App() {
   return (
     <Router>
@@ -22,7 +24,7 @@ function App() {
       <Route path="*" element={<NotFound />} />
       <Route element={<ProtectedRoute />}>
           <Route path="/emergencies" element={<EmergencyPosts />} />
-
+          <Route path="/createemergencypost" element={<EmergencyPostsTable />} />
       </Route>
       </Routes>
       <About />
