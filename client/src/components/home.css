@@ -1,0 +1,39 @@
+/* General Styles */
+.home-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa; /* Subtle gradient */
+  }
+  
+  .message-box {
+    color: #343a40; /* Dark Gray */
+  }
+  
+  .aid-icon {
+    width: 70px; /* Smaller size for smaller images */
+    height: 70px;
+    border-radius: 50%; /* Circular */
+    background-color: #fff; /* Add white background for contrast */
+    padding: 10px; /* Padding inside the circle */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: transform 0.3s ease, filter 0.3s ease;
+  }
+  
+  .aid-icon:hover {
+    transform: scale(1.2); /* Enlarge slightly */
+    filter: brightness(1.2); /* Brighten on hover */
+  }
+  
+  .logo-img {
+    max-width: 150px;
+    height: auto;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2)); /* Shadow effect */
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .logo-img:hover {
+    transform: rotate(10deg); /* Add slight rotation on hover */
+  }
+  
