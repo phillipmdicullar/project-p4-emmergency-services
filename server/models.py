@@ -14,6 +14,11 @@ class User(db.Model, SerializerMixin):
     emergency_posts = db.relationship('EmergencyPost', backref='user')
     # Many-to-many relationship
     responses = association_proxy('emergency_responses', 'response')
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
     def __repr__(self):
         return f"<User(id={self.id}, username='{self.username}', email='{self.email}')>"
@@ -29,12 +34,13 @@ class EmergencyPost(db.Model, SerializerMixin):
     __tablename__ = "emergency_posts"
     id = db.Column(db.Integer, primary_key=True)
     location = db.Column(db.String(), nullable=False)
-    type = db.Column(db.String(), nullable=False)  # Type of emergency (e.g., fire, flood)
+    type = db.Column(db.String(), nullable=False)
     description = db.Column(db.Text, nullable=False)
     date = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    responses = db.relationship('Response', backref='post')
+    responses = db.relationship('Response', backref='post', cascade="all, delete")
 
+    # Other methods...
     def __repr__(self):
         return (f"<EmergencyPost(id={self.id}, location='{self.location}', type='{self.type}', "
                 f"description='{self.description}', date='{self.date}', user_id={self.user_id})>")
