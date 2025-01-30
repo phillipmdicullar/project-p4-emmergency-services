@@ -1,131 +1,150 @@
-#!/usr/bin/env python3
+from flask import Flask, request, jsonify, make_response
+from flask_bcrypt import Bcrypt
+from flask_jwt_extended import (
+    JWTManager, create_access_token, jwt_required, get_jwt_identity
+)
+from models import db, User, EmergencyPost, Response, EmergencyResponse
+from config import app
 
-from flask import Flask, make_response, request, jsonify
-from flask_migrate import Migrate
-from flask_restful import Resource, Api
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
-from config import app, db
-from models import User, EmergencyResponse, EmergencyPost, Response
-from werkzeug.security import generate_password_hash, check_password_hash
-
-# Configure JWT
-app.config['JWT_SECRET_KEY'] = 'your-secret-key'  # Change this to a secure secret key
+# Initialize Flask extensions
+bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 
-# Initialize API and Migrate
-api = Api(app)
-migrate = Migrate(app, db)
+# Ensure tables are created before the first request
+@app.before_first_request
+def create_tables():
+    db.create_all()
 
-# Home Resource
-class Home(Resource):
-    def get(self):
-        return make_response(jsonify({"message": "Welcome to Emergency Response API"}), 200)
+# User Registration Endpoint
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.get_json()
+    if not data.get('username') or not data.get('password') or not data.get('email'):
+        return make_response(jsonify({"error": "Missing required fields"}), 400)
 
-api.add_resource(Home, '/')
+    hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+    new_user = User(username=data['username'], email=data['email'], password=hashed_password)
 
-# User Registration
-class Register(Resource):
-    def post(self):
-        data = request.get_json()
-        if not data or not data.get('username') or not data.get('email') or not data.get('password'):
-            return make_response(jsonify({"error": "Missing username, email, or password"}), 400)
-
-        hashed_password = generate_password_hash(data['password'], method='sha256')
-        new_user = User(username=data['username'], email=data['email'], password=hashed_password)
+    try:
         db.session.add(new_user)
         db.session.commit()
         return make_response(jsonify({"message": "User registered successfully"}), 201)
+    except Exception as e:
+        db.session.rollback()
+        return make_response(jsonify({"error": str(e)}), 500)
 
-api.add_resource(Register, '/register')
+# User Login Endpoint
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    user = User.query.filter_by(username=data['username']).first()
 
-# User Login
-class Login(Resource):
-    def post(self):
-        data = request.get_json()
-        if not data or not data.get('username') or not data.get('password'):
-            return make_response(jsonify({"error": "Missing username or password"}), 400)
+    if user and bcrypt.check_password_hash(user.password, data['password']):
+        access_token = create_access_token(identity={'id': user.id, 'username': user.username})
+        return make_response(jsonify({"access_token": access_token}), 200)
 
-        user = User.query.filter_by(username=data['username']).first()
-        if user and check_password_hash(user.password, data['password']):
-            access_token = create_access_token(identity={'id': user.id})
-            return make_response(jsonify(access_token=access_token), 200)
-        return make_response(jsonify({"error": "Invalid username or password"}), 401)
+    return make_response(jsonify({"error": "Invalid username or password"}), 401)
 
-api.add_resource(Login, '/login')
+# Get all Emergency Posts
+@app.route('/emergencies', methods=['GET'])
+@jwt_required()
+def get_emergencies():
+    posts = EmergencyPost.query.all()
+    return make_response(jsonify([post.to_dict() for post in posts]), 200)
 
-# EmergencyPost Resource
-class EmergencyPostResource(Resource):
-    @jwt_required()
-    def get(self):
-        try:
-            posts = [post.to_dict() for post in EmergencyPost.query.all()]
-            return make_response(jsonify(posts), 200)
-        except Exception as e:
-            return make_response(jsonify({"error": str(e)}), 500)
+# Create an Emergency Post
+@app.route('/emergencies', methods=['POST'])
+@jwt_required()
+def create_emergency():
+    current_user = get_jwt_identity()
+    data = request.get_json()
 
-    @jwt_required()
-    def post(self):
-        try:
-            data = request.get_json()
-            if not data or not data.get('location') or not data.get('type') or not data.get('description'):
-                return make_response(jsonify({"error": "Missing required fields"}), 400)
+    if not data.get('type') or not data.get('location') or not data.get('description'):
+        return make_response(jsonify({"error": "Missing required fields"}), 400)
 
-            new_post = EmergencyPost(**data)
-            db.session.add(new_post)
-            db.session.commit()
-            return make_response(jsonify({"message": "Post created successfully", "data": new_post.to_dict()}), 201)
-        except Exception as e:
-            return make_response(jsonify({"error": str(e)}), 500)
+    new_post = EmergencyPost(
+        type=data['type'],
+        location=data['location'],
+        description=data['description'],
+        user_id=current_user['id']
+    )
 
-api.add_resource(EmergencyPostResource, '/emergencies')
+    try:
+        db.session.add(new_post)
+        db.session.commit()
+        return make_response(jsonify({"message": "Emergency Post created", "post": new_post.to_dict()}), 201)
+    except Exception as e:
+        db.session.rollback()
+        return make_response(jsonify({"error": str(e)}), 500)
 
-# EmergencyPost Detail Resource
-class EmergencyPostDetailResource(Resource):
-    @jwt_required()
-    def get(self, id):
-        try:
-            post = EmergencyPost.query.get_or_404(id)
-            return make_response(jsonify(post.to_dict()), 200)
-        except Exception as e:
-            return make_response(jsonify({"error": str(e)}), 404)
+# Edit an Emergency Post
+@app.route('/emergencies/<int:id>', methods=['PUT'])
+@jwt_required()
+def update_emergency(id):
+    current_user = get_jwt_identity()
+    post = EmergencyPost.query.get_or_404(id)
 
-    @jwt_required()
-    def put(self, id):
-        try:
-            data = request.get_json()
-            post = EmergencyPost.query.get_or_404(id)
-            for key, value in data.items():
-                setattr(post, key, value)
-            db.session.commit()
-            return make_response(jsonify({"message": "Post updated successfully", "data": post.to_dict()}), 200)
-        except Exception as e:
-            return make_response(jsonify({"error": str(e)}), 500)
+    if post.user_id != current_user['id']:
+        return make_response(jsonify({"error": "Unauthorized to edit this post"}), 403)
 
-    @jwt_required()
-    def delete(self, id):
-        try:
-            post = EmergencyPost.query.get_or_404(id)
-            db.session.delete(post)
-            db.session.commit()
-            return make_response(jsonify({"message": "Post deleted successfully"}), 200)
-        except Exception as e:
-            return make_response(jsonify({"error": str(e)}), 500)
+    data = request.get_json()
+    post.type = data.get('type', post.type)
+    post.location = data.get('location', post.location)
+    post.description = data.get('description', post.description)
 
-api.add_resource(EmergencyPostDetailResource, '/emergencies/<int:id>')
+    try:
+        db.session.commit()
+        return make_response(jsonify({"message": "Post updated", "post": post.to_dict()}), 200)
+    except Exception as e:
+        db.session.rollback()
+        return make_response(jsonify({"error": str(e)}), 500)
 
-# User Resource
-class UserResource(Resource):
-    @jwt_required()
-    def get(self):
-        try:
-            current_user_id = get_jwt_identity()['id']
-            user = User.query.get_or_404(current_user_id)
-            return make_response(jsonify(user.to_dict()), 200)
-        except Exception as e:
-            return make_response(jsonify({"error": str(e)}), 404)
+# Delete an Emergency Post
+@app.route('/emergencies/<int:id>', methods=['DELETE'])
+@jwt_required()
+def delete_emergency(id):
+    current_user = get_jwt_identity()
+    post = EmergencyPost.query.get_or_404(id)
 
-api.add_resource(UserResource, '/user')
+    if post.user_id != current_user['id']:
+        return make_response(jsonify({"error": "Unauthorized to delete this post"}), 403)
 
-# Run the application
-if __name__ == "__main__":
-    app.run(port=5555, debug=True)
+    try:
+        db.session.delete(post)
+        db.session.commit()
+        return make_response(jsonify({"message": "Post deleted"}), 200)
+    except Exception as e:
+        db.session.rollback()
+        return make_response(jsonify({"error": str(e)}), 500)
+
+# Add Response to Emergency Post
+@app.route('/emergencies/<int:post_id>/responses', methods=['POST'])
+@jwt_required()
+def add_response(post_id):
+    current_user = get_jwt_identity()
+
+    post = EmergencyPost.query.get_or_404(post_id)
+
+    data = request.get_json()
+    response_text = data.get('response')
+
+    if not response_text:
+        return make_response(jsonify({"error": "Response text is required"}), 400)
+
+    new_response = Response(
+        message=response_text,
+        user_id=current_user['id'],
+        post_id=post.id
+    )
+
+    try:
+        db.session.add(new_response)
+        db.session.commit()
+        return make_response(jsonify({"message": "Response added", "response": new_response.to_dict()}), 201)
+    except Exception as e:
+        db.session.rollback()
+        return make_response(jsonify({"error": str(e)}), 500)
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
