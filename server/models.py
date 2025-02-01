@@ -5,7 +5,6 @@ from config import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
-# ✅ User Model
 class User(db.Model, SerializerMixin):
     __tablename__ = "users"
 
@@ -39,7 +38,6 @@ class User(db.Model, SerializerMixin):
         }
 
 
-# ✅ EmergencyPost Model
 class EmergencyPost(db.Model, SerializerMixin):
     __tablename__ = "emergency_posts"
 
@@ -69,7 +67,6 @@ class EmergencyPost(db.Model, SerializerMixin):
         }
 
 
-# ✅ Response Model
 class Response(db.Model, SerializerMixin):
     __tablename__ = "responses"
 
@@ -97,7 +94,7 @@ class Response(db.Model, SerializerMixin):
         }
 
 
-# ✅ EmergencyResponse (Many-to-Many Relationship Model)
+# EmergencyResponse (Many-to-Many Relationship Model)
 class EmergencyResponse(db.Model, SerializerMixin):
     __tablename__ = "emergency_responses"
 
