@@ -14,6 +14,9 @@ jwt = JWTManager(app)
 @app.before_first_request
 def create_tables():
     db.create_all()
+@app.route('/')
+def index():
+    return "Default user home page"
 
 # User Registration Endpoint
 @app.route('/register', methods=['POST'])
