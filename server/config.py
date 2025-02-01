@@ -6,12 +6,13 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 from datetime import timedelta
 from flask_jwt_extended import JWTManager
+import os
 
 # Instantiate Flask app
 app = Flask(__name__)
 
 # Configure database (Ensure consistency in the database name)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 
