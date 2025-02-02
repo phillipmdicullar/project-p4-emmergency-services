@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-
+import { AiFillAlert } from 'react-icons/ai';
 const CustomNavbar = () => {
   const navigate = useNavigate();
   const isLoggedIn = localStorage.getItem('access_token');
@@ -12,13 +12,17 @@ const CustomNavbar = () => {
   };
 
   return (
-    <Navbar bg="dark" variant="dark" expand="lg">
+    <Navbar className="sticky-top" bg="dark" variant="dark" expand="lg">
       <Container>
-        <Navbar.Brand as={Link} to="/">Emergency Response</Navbar.Brand>
+        {/* <Navbar.Brand as={Link} to="/">Emergency Response</Navbar.Brand> */}
+        
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link as={Link} to="/">Home</Nav.Link>
+          <Navbar.Brand as={Link} to="/">
+          <AiFillAlert size={30} color='red'/>
+          Emergency !
+        </Navbar.Brand>
             {/* <Nav.Link as={Link} to="/emergencies">Emergency Posts</Nav.Link> */}
             
             <Nav.Link as={Link} to="/About">About</Nav.Link>

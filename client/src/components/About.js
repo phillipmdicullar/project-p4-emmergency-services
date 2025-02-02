@@ -1,10 +1,11 @@
 import React from "react";
 import "./About.css"; 
-
+import { Fade, Slide } from "react-awesome-reveal";
 const About = () => {
   return (
     <section id="about" className="about-section py-5 bg-light">
       <div className="container">
+        <Slide>
         <div className="row text-center">
           <div className="col-lg-6 mx-auto">
             <h2 className="display-4 mb-4 text-primary">About Our Emergency Alert System</h2>
@@ -13,6 +14,7 @@ const About = () => {
             </p>
           </div>
         </div>
+        </Slide>
         <div className="row mt-5">
           <div className="col-md-4">
             <div className="card border-0 shadow-lg">

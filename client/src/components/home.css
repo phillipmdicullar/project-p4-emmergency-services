@@ -27,7 +27,7 @@
   }
   
   .logo-img {
-    max-width: 150px;
+    max-width: 300px;
     height: auto;
     filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2)); /* Shadow effect */
     transition: transform 0.3s ease-in-out;
@@ -36,4 +36,8 @@
   .logo-img:hover {
     transform: rotate(10deg); /* Add slight rotation on hover */
   }
+
+
+
+  
   

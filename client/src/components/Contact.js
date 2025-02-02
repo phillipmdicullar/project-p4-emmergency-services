@@ -39,6 +39,7 @@ const Contact = () => {
         >
           {({ isSubmitting }) => (
             <Form>
+            <div className='design'>
               <div className="mb-3">
                 <label className="form-label">Name</label>
                 <Field
@@ -76,10 +77,13 @@ const Contact = () => {
               <button type="submit" className="btn btn-primary w-100" disabled={isSubmitting}>
                 {isSubmitting ? "Sending..." : "Send Message"}
               </button>
+            </div>
             </Form>
           )}
         </Formik>
+      
       </div>
+ 
     </div>
   );
 };
