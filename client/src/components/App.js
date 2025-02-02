@@ -5,13 +5,13 @@ import Login from '../components/Login'
 import Signup from '../components/Signup'
 import ProtectedRoute from '../components/ProtectedRoute'
 import About from '../components/About'
-import EmergencyPosts from '../components/EmergencyPosts'
+// import EmergencyPosts from '../components/EmergencyPosts'
 import Home from '../components/Home'
 import Footer from '../components/Footer'
 // import CreateEmergencyPost from '../components/CreateEmergencyPost'
 // import EmergencyPosts from '../components/emergencies'
 import NotFound from '../components/NotFound'
-
+import Contact from "../components/Contact"
 import EmergencyPostsTable from "./EmergencyPostsTable";
 function App() {
   return (
@@ -22,12 +22,16 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="*" element={<NotFound />} />
+      <Route path="/about" element={<About />}/>
+      <Route path="/contact" element={<Contact />}/>
       <Route element={<ProtectedRoute />}>
-          <Route path="/emergencies" element={<EmergencyPosts />} />
+          {/* <Route path="/emergencies" element={<EmergencyPosts />} /> */}
           <Route path="/createemergencypost" element={<EmergencyPostsTable />} />
       </Route>
       </Routes>
-      <About />
+      {/* <About /> */}
+    <About />
+    <Contact />
     <Footer />
     </Router>
   );
