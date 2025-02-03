@@ -49,6 +49,24 @@ The Emergency Alert System is a full-stack web application that allows users to 
 `Bootstrap + MDB React UI Kit`
 
 `Formik (for form validation)`
+### API Endpoints
+
+## User Routes
+
+`POST /signup` - Register a new user
+
+`POST /login` - Authenticate user
+
+### EmergencyPost Routes
+
+`POST /emergencies` - Create a new emergency post
+
+`GET /emergencies` - Retrieve all emergencies
+
+`PUT /emergencies/:id` - Update an emergency post
+
+`DELETE /emergencies/:id` - Delete an emergency post
+
 ### Installation & Setup
 
 ## Backend (Flask API)
