@@ -2,7 +2,7 @@
 
 ## Project Description
 
---The Emergency Alert System is a full-stack web application that allows users to report emergencies, respond to alerts, and coordinate aid in real time. The system is built using a Flask backend and a React frontend, providing a seamless and user-friendly experience for users who need to report or respond to emergencies quickly.
+The Emergency Alert System is a full-stack web application that allows users to report emergencies, respond to alerts, and coordinate aid in real time. The system is built using a Flask backend and a React frontend, providing a seamless and user-friendly experience for users who need to report or respond to emergencies quickly.
 
 
 
@@ -87,30 +87,30 @@
 
 `cd ../client`
 
-Install dependencies:
+### Install dependencies:
 
-npm install
+`npm install`
 
-Start the React development server:
+### Start the React development server:
 
-npm start
+`npm start`
 
-Deployment
+### Deployment
 
-Backend: Deployed on Render
+`Backend:` Deployed on Render
 
-Frontend: Hosted on Netlify/GitHub Pages
+`Frontend:` Hosted on Netlify/GitHub Pages
 
-Future Enhancements
+### Future Enhancements
 
-Real-time Notifications: Implement WebSocket or Firebase for live emergency updates.
+`Real-time Notifications:` Implement WebSocket or Firebase for live emergency updates.
 
-Map Integration: Use Google Maps API to visualize emergency locations.
+`Map Integration:` Use Google Maps API to visualize emergency locations.
 
-User Roles: Differentiate between responders and reporters.
+`User Roles:` Differentiate between responders and reporters.
 
-File Uploads: Allow users to upload images/videos of emergencies.
+File Uploads: Allow users to upload images/videos
 
-Author
+### Author
 
-Philip Emdokolo
+                                                    `Philip Emdokolo`
